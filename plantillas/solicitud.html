@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container">
+  <h2 class="form-titulo">📝 Solicitud de Turno Diferido (Efectores Periféricos)</h2>
+  
+  <form action="/solicitud/guardar" method="POST" id="formSolicitud">
+    
+    <div class="form-seccion" style="margin-bottom: 24px; padding: 16px; background: #fff; border-radius: 6px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="margin: 0; font-size: 16px; color: #333;">Datos del Paciente</h3>
+        
+        <button type="button" id="btnTogglePaciente" class="btn-primario" style="background: var(--azul-hsi); width: auto; padding: 6px 12px; font-size: 12px;">
+          ➕ Registrar Paciente Nuevo
+        </button>
+      </div>
+
+      <input type="hidden" name="es_nuevo" id="inputEsNuevo" value="false">
+
+      <div id="contenedorBuscador" class="form-grupo" style="position: relative;">
+        <label>Buscar Paciente de la Red (Nombre, DNI o HC)</label>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="inputBuscador" class="form-control" placeholder="Empiece a escribir para buscar..." autocomplete="off">
+          <button type="button" id="btnLimpiarBusqueda" class="btn-primario" style="background: #7e8299; display: none; width: auto;">Limpiar</button>
+        </div>
+        
+        <input type="hidden" name="id_paciente" id="idPacienteSeleccionado" required>
+
+        <ul id="listaSugerencias" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #b5b5c3; border-radius: 4px; max-height: 200px; overflow-y: auto; z-index: 1000; list-style: none; padding: 0; margin: 4px 0 0 0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none;">
+        </ul>
+        
+        <small id="cartelVerificado" style="color: #1bc5bd; font-weight: 600; margin-top: 6px; display: none;">
+          ✅ Paciente verificado y vinculado correctamente.
+        </small>
+      </div>
+
+      <div id="formularioAlVuelo" class="grid-formulario" style="display: none; background: #f8f9fa; padding: 14px; border-radius: 6px; border: 1px dashed #b5b5c3;">
+        <div class="form-grupo">
+          <label>Nombre y Apellido</label>
+          <input type="text" name="nombre_apellido" class="form-control input-nuevo">
+        </div>
+        <div class="form-grupo">
+          <label>DNI del Paciente</label>
+          <input type="text" name="dni" class="form-control input-nuevo">
+        </div>
+        <div class="form-grupo">
+          <label>Fecha de Nacimiento</label>
+          <input type="date" name="fecha_nacimiento" class="form-control input-nuevo">
+        </div>
+        <div class="form-grupo">
+          <label>Nro. Historia Clínica</label>
+          <input type="text" name="nro_hc" class="form-control input-nuevo">
+        </div>
+        <div class="form-grupo">
+          <label>Teléfono</label>
+          <input type="text" name="telefono" class="form-control">
+        </div>
+        <div class="form-grupo">
+          <label>Obra Social</label>
+          <input type="text" name="obra_social" class="form-control" placeholder="Ej: OSEP, PAMI">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-seccion" style="padding: 16px; background: #fff; border-radius: 6px; margin-bottom: 24px;">
+      <h3>Información de Derivación</h3>
+      <div class="grid-formulario">
+        <div class="form-grupo">
+          <label>Efector de Origen</label>
+          <select name="id_centros" required class="form-control">
+            <option value="">Seleccione el centro...</option>
+            {% for c in centros %}
+              <option value="{{ c.id_centros }}">{{ c.nombre }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-grupo">
+          <label>Especialidad Médica</label>
+          <select name="especialidad" required class="form-control">
+            <option value="">Seleccione especialidad...</option>
+            <option value="Ginecología">Ginecología</option>
+            <option value="Endocrinología Ginecológica">Endocrinología Ginecológica</option>
+            <option value="Salud Reproductiva">Salud Reproductiva</option>
+            <option value="Obstetricia">Obstetricia</option>
+            <option value="Clínica Médica">Clínica Médica</option>
+            <option value="Gastroenterología">Gastroenterología</option>
+            <option value="Nutrición">Nutrición</option>
+            <option value="Alergología">Alergología</option>
+            <option value="Traumatología">Traumatología</option>
+            <option value="Neurocirugía">Neurocirugía</option>
+            <option value="Cirugía General">Cirugía General</option>
+            <option value="Neurología">Neurología</option>
+            <option value="Otorrino (ORL)">Otorrino (ORL)</option>
+            <option value="Endocrinología">Endocrinología</option>
+            <option value="Diabetología">Diabetología</option>
+            <option value="Oftalmología">Oftalmología</option>
+            <option value="Urología">Urología</option>
+            <option value="Maxilofacial">Maxilofacial</option>
+            <option value="Infectología">Infectología</option>
+            <option value="Hematología">Hematología</option>
+            <option value="Tratamiento Anticoagulante">Tratamiento Anticoagulante</option>
+            <option value="Cardiología de Adulto">Cardiología de Adulto</option>
+            <option value="Cirugía de Cabeza y Cuello">Cirugía de Cabeza y Cuello</option>
+            <option value="Cirugía de Tórax">Cirugía de Tórax</option>
+            <option value="Cirugía Vascular">Cirugía Vascular</option>
+            <option value="Dermatología">Dermatología</option>
+            <option value="Neumonología">Neumonología</option>
+            <option value="Nefrología">Nefrología</option>
+            <option value="Reumatología">Reumatología</option>
+            <option value="Odontología">Odontología</option>
+            <option value="Neonatología">Neonatología</option>
+            <option value="Neoseguimiento">Neoseguimiento</option>
+            <option value="Neurología Infantil">Neurología Infantil</option>
+            <option value="Nefrología Infantil">Nefrología Infantil</option>
+            <option value="Neumonología Infantil">Neumonología Infantil</option>
+            <option value="Cardiología Infantil">Cardiología Infantil</option>
+            <option value="Diabetología Infantil">Diabetología Infantil</option>
+            <option value="Endocrinología Infantil">Endocrinología Infantil</option>
+            <option value="Cirugía Infantil">Cirugía Infantil</option>
+            <option value="Urología Infantil">Urología Infantil</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-grupo" style="margin-top: 12px;">
+        <label>Diagnóstico / Motivo Presuntivo</label>
+        <textarea name="diagnostico_motivo" required rows="3" class="form-control" placeholder="Breve cuadro clínico justificando el pedido..."></textarea>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primario">Insertar Solicitud</button>
+  </form>
+</div>
+<script id="data-pacientes" type="application/json">
+  {{ lista_pacientes | tojson | safe }}
+</script>
+<script>
+  const pacientes = JSON.parse(document.getElementById('data-pacientes').textContent);
+
+  
+  let esNuevo = false;
+  const btnToggle = document.getElementById('btnTogglePaciente');
+  const inputEsNuevo = document.getElementById('inputEsNuevo');
+  const contenedorBuscador = document.getElementById('contenedorBuscador');
+  const formularioAlVuelo = document.getElementById('formularioAlVuelo');
+  const idPacienteInput = document.getElementById('idPacienteSeleccionado');
+  const inputBuscador = document.getElementById('inputBuscador');
+  const listaSugerencias = document.getElementById('listaSugerencias');
+  const btnLimpiar = document.getElementById('btnLimpiarBusqueda');
+  const cartelVerificado = document.getElementById('cartelVerificado');
+
+  // Alternar entre modo Buscador y modo Registro Nuevo
+  btnToggle.addEventListener('click', () => {
+    esNuevo = !esNuevo;
+    inputEsNuevo.value = esNuevo ? "true" : "false";
+    
+    if (esNuevo) {
+      btnToggle.textContent = "🔍 Usar Buscador Inteligente";
+      btnToggle.style.background = "#7e8299";
+      contenedorBuscador.style.display = "none";
+      formularioAlVuelo.style.display = "grid";
+      idPacienteInput.required = false;
+      document.querySelectorAll('.input-nuevo').forEach(i => i.required = true);
+      resetBuscador();
+    } else {
+      btnToggle.textContent = "➕ Registrar Paciente Nuevo";
+      btnToggle.style.background = "var(--azul-hsi)";
+      contenedorBuscador.style.display = "block";
+      formularioAlVuelo.style.display = "none";
+      idPacienteInput.required = true;
+      document.querySelectorAll('.input-nuevo').forEach(i => i.required = false);
+    }
+  });
+
+  // Lógica del buscador predictivo autocomplete
+  inputBuscador.addEventListener('input', (e) => {
+  const termino = e.target.value.toLowerCase().trim();
+  listaSugerencias.innerHTML = "";
+  
+  if (termino === "") {
+    listaSugerencias.style.display = "none";
+    btnLimpiar.style.display = "none";
+    return;
+  }
+  
+  btnLimpiar.style.display = "block";
+  
+  // Filtro tolerante a nulos o tipos numéricos
+  const filtrados = pacientes.filter(p => {
+    const nombre = p.nombre_apellido ? String(p.nombre_apellido).toLowerCase() : '';
+    const dni = p.dni ? String(p.dni) : '';
+    const hc = p.nro_hc ? String(p.nro_hc).toLowerCase() : '';
+    return nombre.includes(termino) || dni.includes(termino) || hc.includes(termino);
+  });
+
+  if (filtrados.length > 0) {
+    listaSugerencias.style.display = "block";
+    filtrados.forEach(p => {
+      const li = document.createElement('li');
+      li.style.padding = "10px 14px";
+      li.style.cursor = "pointer";
+      li.style.borderBottom = "1px solid #f3f3f3";
+      li.innerHTML = `<strong>${p.nombre_apellido}</strong><div style="font-size:11px; color:#7e8299;">DNI: ${p.dni} | HC: ${p.nro_hc}</div>`;
+      
+      li.addEventListener('mouseenter', () => li.style.background = "#e1f0fa");
+      li.addEventListener('mouseleave', () => li.style.background = "transparent");
+      
+      li.addEventListener('click', () => {
+        idPacienteInput.value = p.id_paciente;
+        inputBuscador.value = `${p.nombre_apellido} (DNI: ${p.dni})`;
+        inputBuscador.disabled = true;
+        listaSugerencias.style.display = "none";
+        cartelVerificado.style.display = "block";
+      });
+      
+      listaSugerencias.appendChild(li);
+    });
+  } else {
+    listaSugerencias.style.display = "block";
+    listaSugerencias.innerHTML = `<li style="padding:12px; color:#f64e60; font-style:italic; text-align:center;">⚠️ No se encontraron coincidencias.</li>`;
+  }
+});
+
+  btnLimpiar.addEventListener('click', resetBuscador);
+
+  function resetBuscador() {
+    inputBuscador.value = "";
+    inputBuscador.disabled = false;
+    idPacienteInput.value = "";
+    listaSugerencias.style.display = "none";
+    btnLimpiar.style.display = "none";
+    cartelVerificado.style.display = "none";
+  }
+
+  // Cerrar sugerencias si hacen clic afuera
+  document.addEventListener('click', (e) => {
+    if (e.target !== inputBuscador) listaSugerencias.style.display = "none";
+  });
+</script>
+{% endblock %}

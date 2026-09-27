@@ -1,0 +1,605 @@
+/* ========================================================
+   VARIABLES Y CONFIGURACIÓN BASE
+======================================================== */
+:root {
+  --bg-principal: #f3f6f9;
+  --bg-sidebar: #1e2235;
+  --texto-oscuro: #1e293b;
+  --texto-mutado: #7e8299;
+  --azul-hsi: #0284c7;
+  --azul-hover: #0369a1;
+  --borde-suave: #e2e8f0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-principal);
+  color: var(--texto-oscuro);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========================================================
+   LAYOUT GENERAL DE LA APP
+======================================================== */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.mobile-navbar {
+  display: none;
+}
+
+.close-sidebar-btn {
+  display: none;
+}
+
+#sidebar-overlay {
+  display: none;
+}
+
+/* ========================================================
+   SIDEBAR (MENÚ LATERAL)
+======================================================== */
+.sidebar {
+  width: 250px;
+  background-color: var(--bg-sidebar);
+  color: #ffffff;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-header h2 {
+  font-size: 15px;
+  color: #38bdf8;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 0;
+}
+
+.nav-item {
+  padding: 12px 20px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #38bdf8;
+}
+
+/* ========================================================
+   CONTENEDOR PRINCIPAL
+======================================================== */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.top-header-desktop {
+  background: #ffffff;
+  padding: 12px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.badge-hospital {
+  background-color: #e1f0fa;
+  color: var(--azul-hsi);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.badge-entorno {
+  font-size: 13px;
+  color: var(--texto-mutado);
+}
+
+.content-body {
+  padding: 24px;
+  flex: 1;
+}
+
+/* ========================================================
+   FORMULARIOS Y COMPONENTES
+======================================================== */
+.form-titulo {
+  color: var(--azul-hsi);
+  margin-bottom: 18px;
+  border-bottom: 2px solid var(--borde-suave);
+  padding-bottom: 8px;
+  font-size: 18px;
+}
+
+.form-seccion {
+  background-color: #ffffff;
+  border: 1px solid var(--borde-suave);
+  padding: 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.form-seccion h3 {
+  margin: 0 0 14px 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--texto-mutado);
+  letter-spacing: 0.5px;
+}
+
+.grid-formulario {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-grupo {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-grupo label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--texto-oscuro);
+  outline: none;
+  background: #ffffff;
+  transition: border-color 0.2s;
+}
+
+.form-control:focus {
+  border-color: var(--azul-hsi);
+}
+
+.btn-primario {
+  background-color: var(--azul-hsi);
+  color: #ffffff;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.btn-primario:hover {
+  background-color: var(--azul-hover);
+}
+
+/* ========================================================
+   GRID DE PACIENTES & FICHA CLÍNICA
+======================================================== */
+.layout-pacientes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  width: 100%;
+}
+
+.columna-gestion {
+  width: 100%;
+  min-width: 0;
+}
+
+.columna-ficha {
+  width: 100%;
+  min-width: 0;
+}
+
+.ficha-box {
+  background: #ffffff !important;
+  border-left: 4px solid var(--azul-hsi) !important;
+  border: 1px solid var(--borde-suave);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ficha-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eff2f5;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.ficha-header h2 {
+  font-size: 17px;
+  margin: 0;
+  color: #1e293b;
+}
+
+.btn-cerrar-ficha {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #f64e60;
+  background-color: #ffe2e5;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.btn-cerrar-ficha:hover {
+  background-color: #f64e60;
+  color: #ffffff;
+}
+
+.ficha-datos p {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #334155;
+}
+
+.txt-hc {
+  color: var(--azul-hsi);
+  font-weight: bold;
+}
+
+.ficha-historial {
+  margin-top: 18px;
+}
+
+.ficha-historial h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--texto-mutado);
+  border-bottom: 1px solid #eff2f5;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.historial-lista {
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-historial {
+  padding: 10px;
+  border: 1px solid #eff2f5;
+  border-radius: 6px;
+  background: #f8fafc;
+  font-size: 12px;
+}
+
+.item-historial-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.txt-origen-h {
+  color: #64748b;
+  margin: 0;
+}
+
+.txt-obs-h {
+  margin: 6px 0 0 0;
+  color: #334155;
+  font-size: 11px;
+  background: #ffffff;
+  padding: 6px;
+  border-radius: 4px;
+  border-left: 3px solid #94a3b8;
+}
+
+.sin-historial {
+  font-style: italic;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* ========================================================
+   TABLAS Y MONITORES DE ESTADO
+======================================================== */
+.monitor-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid var(--borde-suave);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.filtro-item.input-grow {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filtro-item {
+  min-width: 180px;
+}
+
+.btn-sync {
+  height: 36px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #ffffff;
+  border: 1px solid var(--borde-suave);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.tabla-hsi,
+.tabla-pacientes {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tabla-hsi th,
+.tabla-hsi td,
+.tabla-pacientes th,
+.tabla-pacientes td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.tabla-hsi th,
+.tabla-pacientes th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+/* Badges de Estados */
+.badge-estado {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.badge-pendiente { background: #fff4de; color: #ffa800; }
+.badge-asignado  { background: #c9f7f5; color: #1bc5bd; }
+.badge-rechazado { background: #ffe2e5; color: #f64e60; }
+
+.box-resolucion {
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.res-asignado  { background: #e8fff3; color: #1bc5bd; border: 1px solid #c6f6d5; }
+.res-rechazado { background: #fff5f5; color: #f64e60; border: 1px solid #fecdd3; }
+
+.txt-espera { color: #b5b5c3; font-size: 12px; font-style: italic; }
+.sin-datos, .sin-coincidencias { text-align: center; padding: 25px; color: #7e8299; font-style: italic; }
+.sin-coincidencias { color: #f64e60; font-weight: 500; }
+
+/* ========================================================
+   ESCRITORIO / PC (> 768px): FICHA AL COSTADO
+======================================================== */
+@media (min-width: 769px) {
+  .layout-pacientes-grid.con-ficha-activa {
+    display: grid !important;
+    grid-template-columns: 1.15fr 0.85fr !important;
+    align-items: start !important;
+  }
+
+  .columna-ficha {
+    position: sticky;
+    top: 20px;
+  }
+}
+
+/* ========================================================
+   MÓVILES (<= 768px): MENÚ HAMBURGUESA Y FICHA FULL
+======================================================== */
+@media (max-width: 768px) {
+  .mobile-navbar {
+    display: flex;
+    align-items: center;
+    background-color: #1e2235;
+    color: #ffffff;
+    padding: 10px 15px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  }
+
+  .hamburger-btn {
+    background: transparent;
+    border: none;
+    color: #38bdf8;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  .mobile-brand {
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 10px;
+    color: #f8fafc;
+  }
+
+  .top-header-desktop {
+    display: none;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 270px;
+    height: 100vh;
+    z-index: 999;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .close-sidebar-btn {
+    display: block;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  #sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  #sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .content-body {
+    padding: 12px;
+  }
+
+  .grid-formulario {
+    grid-template-columns: 1fr;
+  }
+
+  /* Control de Pacientes vs Ficha en móvil */
+  .layout-pacientes-grid.con-ficha-activa {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ocultar-en-movil {
+    display: none !important;
+  }
+
+  .columna-ficha {
+    width: 100% !important;
+    position: static;
+  }
+}
+
+/* ========================================================
+   CARDS DE PACIENTES EN PANTALLAS CHICAS (<= 600px)
+======================================================== */
+@media (max-width: 600px) {
+  .tabla-pacientes thead {
+    display: none;
+  }
+
+  .tabla-pacientes,
+  .tabla-pacientes tbody,
+  .tabla-pacientes tr {
+    display: block;
+    width: 100%;
+  }
+
+  .tabla-pacientes tr {
+    background: #ffffff;
+    border: 1px solid var(--borde-suave);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+  }
+
+  .tabla-pacientes td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0 !important;
+    border: none !important;
+  }
+
+  .tabla-pacientes td:last-child {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px !important;
+    border-top: 1px dashed var(--borde-suave) !important;
+  }
+
+  .tabla-pacientes td:last-child a {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px !important;
+  }
+}

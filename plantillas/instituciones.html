@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+  <h2 class="form-titulo">🏢 Red de Efectores e Instituciones Periféricas</h2>
+  
+  <form action="/instituciones" method="POST" class="form-seccion" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 24px;">
+    <div class="form-grupo" style="flex: 1; min-width: 250px;">
+      <label>Nombre del Centro de Salud / Hospital</label>
+      <input 
+        type="text" 
+        name="nombre"
+        required 
+        class="form-control" 
+        placeholder="Ej: CAPS Salto de las Rosas o Servicio Penitenciario" 
+      />
+    </div>
+    <div class="form-grupo" style="min-width: 200px;">
+      <label>Área / Zona Sanitaria</label>
+      <select name="zona" class="form-control" style="cursor: pointer;">
+        <option value="San Rafael Distritos">San Rafael Distritos</option>
+        <option value="San Rafael Ciudad">San Rafael Ciudad</option>
+        <option value="General Alvear">General Alvear</option>
+        <option value="Malargüe">Malargüe</option>
+      </select>
+    </div>
+    <button 
+      type="submit" 
+      class="btn-primario" 
+      style="width: auto; height: 36px; padding: 0 20px;"
+    >
+      Insertar
+    </button>
+  </form>
+
+  <div style="margin-bottom: 16px;">
+    <input
+      type="text"
+      id="buscadorInstituciones"
+      placeholder="🔍 Buscar institución por nombre o región sanitaria..."
+      class="form-control"
+      style="width: 100%; max-width: 400px;"
+      autocomplete="off"
+    />
+  </div>
+<div class="table-responsive">
+  <table class="tabla-hsi">
+    <thead>
+      <tr>
+        <th>Institución Sanitaria</th>
+        <th>Jurisdicción / Región</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in centros %}
+        <tr class="fila-institucion">
+          <td class="inst-nombre"><strong>{{ c.nombre }}</strong></td>
+          <td class="inst-zona">
+            <span class="badge-hospital" style="background: #e1f0fa; color: var(--azul-hsi); padding: 4px 8px; font-weight: bold; border-radius: 4px;">
+              {{ c.zona }}
+            </span>
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="2" style="text-align: center; color: #7e8299; padding: 20px; font-style: italic;">
+            No hay instituciones registradas en Supabase aún.
+          </td>
+        </tr>
+      {% endfor %}
+      
+      <tr id="filaNoResultados" style="display: none;">
+        <td colspan="2" style="text-align: center; padding: 20px; color: #f64e60; font-weight: 500;">
+          ⚠️ No se encontraron centros médicos que coincidan con la búsqueda.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+<script>
+  document.getElementById('buscadorInstituciones').addEventListener('input', function(e) {
+    const termino = e.target.value.toLowerCase().trim();
+    const filas = document.querySelectorAll('.fila-institucion');
+    const cartelOculto = document.getElementById('filaNoResultados');
+    let encontradas = 0;
+    
+    filas.forEach(fila => {
+      const nombre = fila.querySelector('.inst-nombre').textContent.toLowerCase();
+      const zona = fila.querySelector('.inst-zona').textContent.toLowerCase();
+      
+      // Si el término coincide con el nombre del CAPS o con la zona (ej: "Alvear")
+      if (nombre.includes(termino) || zona.includes(termino)) {
+        fila.style.display = '';
+        encontradas++;
+      } else {
+        fila.style.display = 'none';
+      }
+    });
+    
+    // Si no hay ninguna coincidencia, mostramos el cartel de aviso
+    if (encontradas === 0 && filas.length > 0) {
+      cartelOculto.style.display = '';
+    } else {
+      cartelOculto.style.display = 'none';
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestión Interna de Turnos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+
+    <div id="sidebar-overlay" onclick="toggleMenu()"></div>
+
+    <header class="mobile-navbar">
+        <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Abrir Menú">☰</button>
+        <span class="mobile-brand">GESTIÓN DE TURNOS</span>
+    </header>
+
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>GESTION INTERNA DE TURNOS</h2>
+                <button class="close-sidebar-btn" onclick="toggleMenu()">✕</button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="/instituciones" class="nav-item">🏢 Instituciones</a>
+                <a href="/pacientes" class="nav-item">👥 Pacientes (ABM)</a>
+                <a href="/solicitud" class="nav-item">📝 Solicitud de turnos</a>
+                <a href="/estado" class="nav-item">📊 Estado de Solicitudes</a>
+                <a href="/gestion" class="nav-item">🗓️ Gestión de turnos</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-header-desktop">
+                <span class="badge-hospital">HOSPITAL TEODORO J. SCHESTAKOW</span>
+                <span class="badge-entorno">Entorno: <strong>Mendoza Salud</strong></span>
+            </div>
+            
+            <div class="content-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                {{ message }}
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

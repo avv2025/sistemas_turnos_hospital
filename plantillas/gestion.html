@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+  <div class="monitor-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+    <span style="font-weight: 600; color: #181c32;">Bandeja de Entrada — Monitor de Auditoría Central</span>
+    <a href="/gestion" class="btn-primario" style="width: auto; height: 32px; padding: 0 12px; text-decoration: none; display: flex; align-items: center;">
+      🔄 Sincronizar
+    </a>
+  </div>
+<div class="table-responsive">
+  <table class="tabla-hsi">
+    <thead>
+      <tr>
+        <th>Fecha / Hora</th>
+        <th>Origen</th>
+        <th>Paciente / Documento</th>
+        <th>Especialidad Requerida</th>
+        <th>Estado</th>
+        <th>Gestión</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in solicitudes %}
+        <tr>
+          <td>
+            {{ s.fecha_corta }}
+            <br />
+            <small style="color: #b5b5c3;">{{ s.hora_corta }} hs</small>
+          </td>
+
+          <td><strong>{{ s.centros_salud.nombre if s.centros_salud else 'No Identificado' }}</strong></td>
+
+          <td>
+            <strong>{{ s.pacientes.nombre_apellido if s.pacientes else 'Desconocido' }}</strong>
+            <br />
+            <small style="color: #7e8299;">DNI: {{ s.pacientes.dni }} | HC: {{ s.pacientes.nro_hc }}</small>
+          </td>
+
+          <td>
+            <span style="font-weight: 600; color: var(--azul-hsi);">{{ s.especialidad }}</span>
+            <p style="margin: 4px 0 0 0; font-size: 11px; color: #7e8299; font-style: italic;">"{{ s.diagnostico_motivo }}"</p>
+            
+            {% if s.observaciones %}
+              {% if s.estado == 'rechazado' %}
+                <p style="margin: 4px 0 0 0; font-size: 11px; font-weight: 600; color: #f64e60;">
+                  📋 {{ s.observaciones }}
+                </p>
+              {% else %}
+                <p style="margin: 4px 0 0 0; font-size: 11px; font-weight: 600; color: #1bc5bd;">
+                  📋 {{ s.observaciones }}
+                </p>
+              {% endif %}
+            {% endif %}
+          </td>
+
+          <td>
+            {% if s.estado == 'pendiente' %}
+              <span class="badge-estado" style="background: #fff4de; color: #ffa800; padding: 4px 8px; font-size: 10px; font-weight: bold; border-radius: 4px;">PENDIENTE</span>
+            {% elif s.estado == 'asignado' %}
+              <span class="badge-estado" style="background: #c9f7f5; color: #1bc5bd; padding: 4px 8px; font-size: 10px; font-weight: bold; border-radius: 4px;">ASIGNADO</span>
+            {% else %}
+              <span class="badge-estado" style="background: #ffe2e5; color: #f64e60; padding: 4px 8px; font-size: 10px; font-weight: bold; border-radius: 4px;">RECHAZADO</span>
+            {% endif %}
+          </td>
+
+          <td>
+            {% if s.estado == 'pendiente' %}
+              <div style="display: flex; gap: 6px;">
+                <button 
+                  type="button" 
+                  onclick="abrirModalAgenda('{{ s.id_solicitud }}')"
+                  style="background: #1bc5bd; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;"
+                >
+                  Aceptar
+                </button>
+                <button 
+                  type="button" 
+                  onclick="dispararRechazo('{{ s.id_solicitud }}')"
+                  style="background: #f64e60; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;"
+                >
+                  Rechazar
+                </button>
+              </div>
+            {% else %}
+              <span style="color: #b5b5c3; font-size: 11px; font-style: italic;">Auditado</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 30px; color: #b5b5c3; font-style: italic;">
+            No se registran solicitudes entrantes pendientes de auditoría médica.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+<div id="modalAsignarTurno" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); display: none; justify-content: center; align-items: center; z-index: 9999;">
+  <div style="background: white; padding: 24px; border-radius: 8px; width: 90%; max-width: 380px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+    <h3 style="margin: 0 0 12px 0; color: var(--azul-hsi); font-size: 16px;">📆 Programar Turno en Agenda</h3>
+    <p style="font-size: 12px; color: #7e8299; margin-bottom: 16px;">
+      Seleccione la fecha y hora asignada en el Hospital Teodoro J. Schestakow para esta derivación periférica.
+    </p>
+    
+    <form action="/gestion/aceptar" method="POST">
+      <input type="hidden" name="id_solicitud" id="modalIdSolicitud">
+      
+      <div class="form-grupo" style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 6px; font-weight: 600;">Fecha y Hora de la Cita</label>
+        <input type="datetime-local" name="fecha_hora" required class="form-control" />
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button type="button" onclick="cerrarModalAgenda()" style="background: #7e8299; color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 13px;">
+          Cancelar
+        </button>
+        <button type="submit" style="background: #1bc5bd; color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;">
+          Confirmar Turno
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<form id="formRechazoOculto" action="/gestion/rechazar" method="POST" style="display: none;">
+  <input type="hidden" name="id_solicitud" id="rechazoIdSolicitud">
+  <input type="hidden" name="motivo" id="rechazoMotivo">
+</form>
+
+<script>
+  const modal = document.getElementById('modalAsignarTurno');
+  const modalIdInput = document.getElementById('modalIdSolicitud');
+
+  function abrirModalAgenda(id) {
+    modalIdInput.value = id;
+    modal.style.display = 'flex';
+  }
+
+  function cerrarModalAgenda() {
+    modal.style.display = 'none';
+    modalIdInput.value = '';
+  }
+
+  function dispararRechazo(id) {
+    const motivo = prompt("❌ Ingrese el motivo o justificación técnica del rechazo médico:");
+    if (motivo === null) return; 
+    
+    if (motivo.trim() === "") {
+      alert("Por favor, ingrese un motivo válido para rechazar la solicitud.");
+      return;
+    }
+
+    document.getElementById('rechazoIdSolicitud').value = id;
+    document.getElementById('rechazoMotivo').value = motivo;
+    document.getElementById('formRechazoOculto').submit();
+  }
+</script>
+{% endblock %}
